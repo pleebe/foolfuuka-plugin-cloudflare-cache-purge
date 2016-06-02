@@ -1,0 +1,28 @@
+{
+  "name": "foolz/foolfuuka-plugin-cloudflare-cache-purge",
+  "type": "foolz-foolfuuka-plugin",
+  "description": "Allows administrators and moderators to delete content from the Cloudflare cache & automatic cache removal when removing images.",
+  "version": "1.0.0",
+  "keywords": ["cloudflare", "cache", "purge"],
+  "homepage": "http://www.4plebs.org",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "4plebs",
+      "email": "admin@4plebs.org"
+    }
+  ],
+  "support": {
+    "email": "admin@4plebs.org",
+    "irc": "irc://irc.irchighway.net/fooldriver"
+  },
+  "require" : {
+    "foolz/plugin": "dev"
+  },
+  "extra": {
+    "name": "Cloudflare Cache Purge",
+    "slug": "cloudflare_cache_purge",
+    "identifier": "fu",
+    "module": "foolfuuka"
+  }
+}
