@@ -18,16 +18,11 @@ class HHVM_CloudflareCachePurge
                 $autoloader->addClassMap([
                     'Foolz\FoolFrame\Controller\Admin\Plugins\CloudflareAdmin' => __DIR__ . '/classes/controller/cfadmin.php',
                     'Foolz\FoolFrame\Controller\Admin\Plugins\CloudflareCachePurge' => __DIR__ . '/classes/controller/admin.php',
-                    'Foolz\FoolFrame\Controller\Admin\Plugins\CloudflareCacheNuke' => __DIR__ . '/classes/controller/nuke.php',
-                    'Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model\CloudflareCachePurge' => __DIR__ . '/classes/model/purge.php',
-                    'Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model\CloudflareCacheNuke' => __DIR__ . '/classes/model/nuke.php'
+                    'Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model\CloudflareCachePurge' => __DIR__ . '/classes/model/purge.php'
                 ]);
 
                 $context->getContainer()
                     ->register('foolfuuka-plugin.cloudflare_cache_purge', 'Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model\CloudflareCachePurge')
-                    ->addArgument($context);
-                $context->getContainer()
-                    ->register('foolfuuka-plugin.cloudflare_full_purge', 'Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model\CloudflareCacheNuke')
                     ->addArgument($context);
 
                 Event::forge('Foolz\FoolFrame\Model\Context::handleWeb#obj.afterAuth')
@@ -58,18 +53,6 @@ class HHVM_CloudflareCachePurge
                                     ]
                                 )
                             );
-                            $context->getRouteCollection()->add(
-                                'foolfuuka.plugin.cloudflare_full_purge.admin', new \Symfony\Component\Routing\Route(
-                                    '/admin/plugin/cloudflare_full_purge/{_suffix}',
-                                    [
-                                        '_suffix' => 'manage',
-                                        '_controller' => 'Foolz\FoolFrame\Controller\Admin\Plugins\CloudflareCacheNuke::manage'
-                                    ],
-                                    [
-                                        '_suffix' => '.*'
-                                    ]
-                                )
-                            );
 
                             Event::forge('Foolz\FoolFrame\Controller\Admin::before#var.sidebar')
                                 ->setCall(function ($result) {
@@ -84,8 +67,7 @@ class HHVM_CloudflareCachePurge
                                         'level' => 'admin',
                                         'content' => [
                                             'cloudflare_cfadmin/manage' => ['level' => 'admin', 'name' => 'Cloudflare API Settings', 'icon' => 'icon-leaf'],
-                                            'cloudflare_cache_purge/manage' => ['level' => 'admin', 'name' => 'Cloudflare Cache Purge', 'icon' => 'icon-leaf'],
-                                            'cloudflare_full_purge/manage' => ['level' => 'admin', 'name' => 'Cloudflare Full Cache Nuke', 'icon' => 'icon-leaf']
+                                            'cloudflare_cache_purge/manage' => ['level' => 'admin', 'name' => 'Cloudflare Cache Purge', 'icon' => 'icon-leaf']
                                         ]
                                     ];
                                     $result->setParam('sidebar', $sidebar);

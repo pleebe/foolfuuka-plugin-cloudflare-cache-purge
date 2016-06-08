@@ -17,7 +17,7 @@ class CloudflareAdmin extends \Foolz\FoolFrame\Controller\Admin
 
     public function security()
     {
-        return $this->getAuth()->hasAccess('maccess.mod');
+        return $this->getAuth()->hasAccess('maccess.admin');
     }
 
     function structure()

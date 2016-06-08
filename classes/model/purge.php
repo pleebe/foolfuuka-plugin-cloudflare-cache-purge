@@ -4,9 +4,10 @@ namespace Foolz\FoolFuuka\Plugins\CloudflareCachePurge\Model;
 
 use Foolz\FoolFrame\Model\Context;
 use Foolz\FoolFrame\Model\Model;
+use Foolz\FoolFrame\Model\DoctrineConnection;
 use Foolz\FoolFrame\Model\Preferences;
 use Foolz\FoolFrame\Model\Logger;
-
+use Foolz\FoolFuuka\Model\RadixCollection;
 use Foolz\FoolFuuka\Model\Comment;
 use Foolz\FoolFuuka\Model\CommentBulk;
 use Foolz\FoolFuuka\Model\CommentFactory;
@@ -19,6 +20,7 @@ class CloudflareCachePurge extends Model
      * @var Logger
      */
     protected $logger;
+
     /**
      * @var DoctrineConnection
      */
@@ -33,6 +35,11 @@ class CloudflareCachePurge extends Model
      * @var MediaFactory
      */
     protected $media_factory;
+
+    /**
+     * @var Preferences
+     */
+    protected $preferences;
 
     public function __construct(Context $context)
     {
@@ -121,7 +128,7 @@ class CloudflareCachePurge extends Model
         curl_close($ch);
     }
 
-    public function process($input)
+    public function process($input, $all)
     {
         $uris = preg_split('/\r\n|\r|\n/', $input);
         $purgelist = [];
@@ -134,12 +141,17 @@ class CloudflareCachePurge extends Model
             'files'=>$purgelist
         ));
 
+        if($all=='1') {
+            $data = '{"purge_everything":true}';
+        }
+
         $zoneid = $this->preferences->get('foolfuuka.plugins.cloudflare_cache_purge.zoneid');
         $email = $this->preferences->get('foolfuuka.plugins.cloudflare_cache_purge.email');
         $xauth = $this->preferences->get('foolfuuka.plugins.cloudflare_cache_purge.xauth');
 
-        if($zoneid===null||$zoneid===''||$email===null||$email===''||$xauth===null||$xauth==='')
-            return '';
+        if($zoneid===null||$zoneid===''||$email===null||$email===''||$xauth===null||$xauth==='') {
+            return ['alert', 'You need to setup your account details in the API Settings page first.'];
+        }
 
         $ch = curl_init();
 
@@ -154,11 +166,15 @@ class CloudflareCachePurge extends Model
 
         $result = curl_exec($ch);
         $temp = json_decode($result);
-        if($temp->{"success"} === false)
-            $this->logger->error($data.' cfapi response: '.$result);
+        if($temp->{"success"} === false) {
+            $this->logger->error($data . ' cfapi response: ' . $result);
+            $notices = ['danger',$result];
+        } else {
+            $notices = ['success','Files purged successfully.'];
+        }
 
         curl_close($ch);
 
-        return $data;
+        return $notices;
     }
 }
