@@ -45,7 +45,7 @@ class CloudflareAdmin extends \Foolz\FoolFrame\Controller\Admin
             'foolfuuka.plugins.cloudflare_cache_purge.xauth' => [
                 'preferences' => true,
                 'type' => 'input',
-                'label' => _i('Clooudflare X-Auth token'),
+                'label' => _i('Cloudflare X-Auth token'),
                 'help' => _i('This is available from your Cloudflare account settings under "API Key"'),
                 'class' => 'span3',
                 'validation' => [new Trim()]
